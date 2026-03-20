@@ -25,13 +25,33 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+**Game Purpose:**
+A number guessing game where the player picks a difficulty (Easy: 1–20, Normal: 1–50, Hard: 1–100), then tries to guess the secret number within a limited number of attempts. Each guess earns or deducts points, and hints tell you whether to go higher or lower.
+
+**Bugs Found:**
+1. **Hints were backwards** — "Too High" said "Go HIGHER!" and "Too Low" said "Go LOWER!", which is the opposite of what the player needs.
+2. **Normal/Hard difficulty ranges were swapped** — Normal used 1–100 and Hard used 1–50 instead of the other way around.
+3. **Secret number type-switching** — On even-numbered attempts, the secret was cast to a string, causing correct guesses to silently fail and numeric comparisons to use lexicographic ordering.
+4. **Win score formula off by one** — Used `attempt_number + 1` instead of `attempt_number - 1`, unfairly docking 10 extra points even on a first-guess win.
+5. **"Too High" gave points on even attempts** — The score function added +5 for a wrong guess when `attempt_number % 2 == 0`, instead of always deducting.
+6. **New Game button broken after winning** — `st.session_state.status` was never reset to `"playing"`, so the game froze on the win screen permanently.
+
+**Fixes Applied:**
+- Corrected hint messages in `check_guess` so "Too High" → "Go LOWER!" and "Too Low" → "Go HIGHER!"
+- Swapped the ranges in `get_range_for_difficulty` so Hard is 1–100 and Normal is 1–50.
+- Removed the type-switching code that was casting the secret to a string on even attempts.
+- Fixed the TypeError fallback in `check_guess` to convert the secret back to `int` for numeric comparison instead of using string ordering.
+- Fixed the win score formula to `100 - 10 * (attempt_number - 1)`.
+- Removed the even/odd branch in `update_score` so "Too High" always deducts 5 points.
+- Added `st.session_state.status = "playing"`, `st.session_state.score = 0`, and `st.session_state.history = []` to the New Game handler.
 
 ## 📸 Demo
 
-- [ ] [Insert a screenshot of your fixed, winning game here]
+- [image.png] [Insert a screenshot of your fixed, winning game here]
+
+**pytest results (16 tests passing):**
+
+- [ image.png] [Insert a screenshot of your pytest terminal output here]
 
 ## 🚀 Stretch Features
 

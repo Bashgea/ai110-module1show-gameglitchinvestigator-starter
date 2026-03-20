@@ -10,9 +10,11 @@ The game had six bugs in total. The most obvious ones when first playing were th
 
 ## 2. How did you use AI as a teammate?
 
-- I used Claude Code (Claude Sonnet) as my AI assistant throughout this project.
-- Claude correctly identified that the New Game bug was caused by `st.session_state.status` never being reset back to `"playing"` — I verified this by reading the code myself and confirming that the status check calls `st.stop()` if it's not `"playing"`, which is exactly why the game froze after a win. Claude also caught that `history` and `score` needed to reset too, which I hadn't explicitly asked for.
-- For the hint bug, I verified the fix by looking at the original `check_guess` function — it returned `"Go HIGHER!"` when `guess > secret`, which is clearly wrong since a guess that's too high should tell you to go lower. That one was straightforward to confirm by reading the logic.
+I used Claude Code (Claude Sonnet) as my AI assistant throughout this project.
+
+**Correct suggestion:** Claude identified that the New Game button was broken because `st.session_state.status` was never reset back to `"playing"` after a win. It suggested adding `st.session_state.status = "playing"` (along with resetting `history` and `score`) inside the `if new_game:` block. I verified this by reading the code myself — line 141 checks `if st.session_state.status != "playing"` and calls `st.stop()`, which is exactly why the game froze. I confirmed the fix worked by winning a game and clicking New Game, which now correctly starts a fresh round.
+
+**Incorrect/misleading suggestion:** When Claude implemented the `check_guess` TypeError fallback in `logic_utils.py`, it initially kept the string-based comparison (`"9" > "10"`) from the original buggy code. This meant that even after fixing the type-switching bug, the fallback path still gave wrong hints — `check_guess(9, "10")` returned "Too High" instead of "Too Low" because `"9" > "10"` is `True` in Python's lexicographic string ordering. I only caught this because the pytest test `test_too_low_not_flipped_by_string_comparison` failed when I ran the test suite. Without that test, the bug would have stayed hidden since it only triggers when the secret is passed as a string.
 
 ---
 
