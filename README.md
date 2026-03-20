@@ -47,11 +47,11 @@ A number guessing game where the player picks a difficulty (Easy: 1–20, Normal
 
 ## 📸 Demo
 
-- [image.png] [Insert a screenshot of your fixed, winning game here]
+- [created images folder that contains proof] [Insert a screenshot of your fixed, winning game here]
 
 **pytest results (16 tests passing):**
 
-- [ image.png] [Insert a screenshot of your pytest terminal output here]
+- [ created images folder that contains proof] [Insert a screenshot of your pytest terminal output here]
 
 ## 🚀 Stretch Features
 
